@@ -1,4 +1,4 @@
-<img height="120" src="img/DeerWatcher.jpg" />
+<img height="120" src="img/DeerWatcher.jpg"/>
 
 # Dirwatcher
 

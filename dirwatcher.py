@@ -31,10 +31,7 @@ logging.basicConfig(
 
 
 def create_parser(args):
-    global polling_interval
-    global extension
-    global polling_dir
-    global magic_text
+
     # Your code here
     # - An argument that controls the polling interval (instead of hard-coding it)
     # - An argument that specifics the "magic text" to search for
@@ -46,19 +43,8 @@ def create_parser(args):
     parser.add_argument('directory', help='directoryto search')
     parser.add_argument('ext', help='magic text')
     parser.add_argument('magictext', help='magic text to search for')
+    return parser
     #
-    ns = parser.parse_args(args)
-    logger.info('args: '+str(ns))
-
-    if (ns.interval != None):
-        polling_interval = ns.interval
-    if (ns.directory != None):
-        polling_dir = ns.directory
-    if (ns.ext != None):
-        extension = ns.ext
-    if (ns.magictext != None):
-        magic_text = ns.magictext
-    return None
 
 
 def search_for_magic(filename, start_line, magic_string):
@@ -90,8 +76,8 @@ def watch_directory(path, magic_string, extension, interval):
                     start_line = files[filename]
                 else:
                     start_line = 1
-                logger.info('checking file '+filename +
-                            ' starting at line '+str(start_line))
+                # logger.info('checking file '+filename +
+                    # ' starting at line '+str(start_line))
                 search_for_magic(filename, start_line, magic_string)
     else:
         logger.warning("directory "+path+" does not exist")
@@ -108,7 +94,7 @@ def signal_handler(sig_num, frame):
     :return None
     """
     # log the associated signal name
-    logger.warning('Received ' + signal.Signals(sig_num).name)
+    logger.warning('Received ' + signal.strsignal(sig_num).name)
     exit_flag = True
     return None
 
@@ -120,27 +106,34 @@ def main(args):
     signal.signal(signal.SIGTERM, signal_handler)
     # Now my signal_handler will get called if OS sends
     # either of these to my process.
-    create_parser(args)
+
+    parser = create_parser(args)
+    ns = parser.parse_args(args)
+    logger.info('args: ' + str(ns))
+
+    # create parser object capturing 123
 
     while not exit_flag:
         try:
             # call my directory watching function
-            watch_directory(polling_dir, magic_text,
-                            extension, polling_interval)
+            watch_directory(ns.directory, ns.magictext,
+                            ns.ext, ns.interval)
 
         except Exception as e:
             # This is an UNHANDLED exception
             # Log an ERROR level message here
-            logger.exception("Exception: {}".format(e.message))
+            logger.exception("Exception: {}".format(e))
 
         # put a sleep inside my while loop so I don't peg the cpu usage at 100%
-        time.sleep(polling_interval)
+        time.sleep(int(polling_interval))
 
     # final exit point happens here
     # Log a message that we are shutting down
     logger.info('Exiting Deerz now...')
     logger.info('Program run time '+str(datetime.now() - prog_start_time))
     # Include the overall uptime since program start
+    # fix timesleep()
+    # fix print so that it is printing only once
 
 
 if __name__ == '__main__':
