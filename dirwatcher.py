@@ -66,7 +66,10 @@ def search_for_magic(filename, start_line, magic_string):
 
 
 def watch_directory(path, magic_string, extension, interval):
-    # Your code here
+    """
+    This function defines the watch directory and takes care of the extensions
+    searching for the magic Text
+    """
     global files
     if (os.path.exists(path)):
         for file in os.listdir(path):
@@ -76,8 +79,7 @@ def watch_directory(path, magic_string, extension, interval):
                     start_line = files[filename]
                 else:
                     start_line = 1
-                # logger.info('checking file '+filename +
-                    # ' starting at line '+str(start_line))
+                    logger.info(f"new {filename} added")
                 search_for_magic(filename, start_line, magic_string)
     else:
         logger.warning("directory "+path+" does not exist")
