@@ -94,7 +94,7 @@ def signal_handler(sig_num, frame):
     :return None
     """
     # log the associated signal name
-    logger.warning('Received ' + signal.strsignal(sig_num).name)
+    logger.warning('Received ' + signal.strsignal(sig_num))
     exit_flag = True
     return None
 
